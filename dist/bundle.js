@@ -96817,12 +96817,8 @@ lib.getPositionFromD3Event = function() {
     }
 };
 
+module.exports = { templateFormatString, lib };
 
-// Export the function along with any other necessary exports
-module.exports = {
-    templateFormatString,
-	lib,
-};
 
 /***/ }),
 

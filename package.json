@@ -1,9 +1,10 @@
 {
   "name": "plotly_tooltip",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+	"build": "node modifyPlotlySource.js && webpack --no-cache",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
