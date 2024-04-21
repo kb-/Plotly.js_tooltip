@@ -8,7 +8,7 @@ console.log(lib);
 
 const plotId = 'plot'; // This ID must match the ID of the div containing the Plotly plot
 
-var userTemplate = "y: %{y}"; //"%H~%M~%S.%2f"
+var userTemplate = "%{x|%H:%M:%S}<br>y: %{y}";//%{x|%Y-%m-%d %H:%M:%S}
 var custom_style = {
   arrowsize: 1.2,
   font: {
@@ -33,18 +33,18 @@ const DEFAULT_STYLE = {
   xanchor: "left",// horizontal alignment of the text (can be 'left', 'center', or 'right')
 };
 
-_.defaults(userTemplate, DEFAULT_TEMPLATE);
+userTemplate = userTemplate?userTemplate:DEFAULT_TEMPLATE;
 _.defaults(custom_style, DEFAULT_STYLE);
 
 var trace1 = {
-  x: [1, 2, 3, 4],
+  x: ['2024-04-01T12:00:00', '2024-04-01T13:00:00', '2024-04-01T14:00:00', '2024-04-01T15:00:00'],
   y: [10, 15, 13, 17],
   type: 'scatter',
   hovertemplate: userTemplate,
 };
 
 var trace2 = {
-  x: [1, 2, 3, 4],
+  x: ['2024-04-01T12:00:00', '2024-04-01T13:00:00', '2024-04-01T14:00:00', '2024-04-01T15:00:00'],
   y: [16, 5, 11, 9],
   type: 'scatter',
   hovertemplate: userTemplate,
