@@ -11,7 +11,7 @@ module.exports = [{
       library: 'PlotlyTooltip',
       libraryTarget: 'umd'
     },
-    mode: 'development',  // Change to 'production' when ready to deploy
+    mode: 'production',  // Change to 'production' when ready to deploy / production
     devtool: 'source-map',
     module: {
       rules: [
