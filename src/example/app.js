@@ -58,7 +58,7 @@ const TooltipButton = createTooltipToggleButton(plotId, userTemplate, customStyl
 var config = {
   editable: true,
   displayModeBar: true,
-  modeBarButtonsToAdd: [TooltipButton],
+  modeBarButtonsToAdd: [TooltipButton,"v1hovermode", "hoverclosest", "hovercompare", "togglehover", "togglespikelines", "drawline", "drawopenpath", "drawclosedpath", "drawcircle", "drawrect", "eraseshape"],
   responsive: true
 };
 
