@@ -119379,7 +119379,7 @@ var customStyle = {
   arrowsize: 1.2,
   font: {
     size: 10,
-    color: 'blue',
+    color: '#0d6efd',
   },
 };
 var plotId = 'plot';
@@ -119390,7 +119390,7 @@ function generateDateTime(start, count) {
   let current = new Date(start);
   for (let i = 0; i < count; i++) {
     result.push(current.toISOString());
-    current.setMinutes(current.getMinutes() + 1);
+    current.setHours(current.getHours() + 10);
   }
   return result;
 }
@@ -119401,21 +119401,24 @@ function generateRandomYValues(count) {
 }
 
 // Generating 10,000 x and y values for each trace
-var xValues = generateDateTime('2024-04-01T12:00:00', 100);
-var yValuesTrace1 = generateRandomYValues(100);
-var yValuesTrace2 = generateRandomYValues(100);
+var xValues = generateDateTime('2024-04-01T12:00:00', 10);
+var yValuesTrace1 = generateRandomYValues(10);
+var yValuesTrace2 = generateRandomYValues(10);
 
 var trace1 = {
   x: xValues,
   y: yValuesTrace1,
-  type: 'scatter',
+  type: 'lines+markers',
+  marker: { size: 6 },
   hovertemplate: userTemplate,
 };
 
 var trace2 = {
   x: xValues,
   y: yValuesTrace2,
-  type: 'scatter',
+  type: 'lines+markers',
+  marker: { size: 6 },
+  line: { dash: 'dot' },
   hovertemplate: userTemplate,
 };
 
