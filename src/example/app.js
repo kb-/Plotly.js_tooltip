@@ -29,9 +29,9 @@ function generateRandomYValues(count) {
 }
 
 // Generating 10,000 x and y values for each trace
-var xValues = generateDateTime('2024-04-01T12:00:00', 10000);
-var yValuesTrace1 = generateRandomYValues(10000);
-var yValuesTrace2 = generateRandomYValues(10000);
+var xValues = generateDateTime('2024-04-01T12:00:00', 100);
+var yValuesTrace1 = generateRandomYValues(100);
+var yValuesTrace2 = generateRandomYValues(100);
 
 var trace1 = {
   x: xValues,
