@@ -38,7 +38,7 @@ function createTooltipToggleButton(plotId, userTemplate, customStyle) {
 
   return {
     name: 'toggleTooltip',
-    title: 'Toggle tooltip',
+    title: 'Add tooltip',
     icon: customIcon,
     click: function(gd) {
       toggleTooltipFunctionality(plotId, userTemplate, customStyle);
