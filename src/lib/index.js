@@ -37,6 +37,8 @@ function createTooltipToggleButton(plotId, userTemplate, customStyle) {
   };
 }
 
+must_run = true;
+
 const toggleTooltipFunctionality = (plotId, userTemplate, customStyle) => {
     _.defaults(customStyle, DEFAULT_STYLE);
     const gd = document.getElementById(plotId);
@@ -44,7 +46,7 @@ const toggleTooltipFunctionality = (plotId, userTemplate, customStyle) => {
         // Activate tooltips
         gd.on('plotly_click', function(data) {
             var pts = data.points[0];
-            var existingAnnotations = (gd.layout.annotations || []).slice(); // Clone the array to avoid direct mutation
+            var existingIndex = gd.layout.annotations.findIndex(ann => ann.x === pts.x && ann.y === pts.y);
             var text = lib.hovertemplateString(userTemplate, {}, gd._fullLayout._d3locale, pts, {});
 
             var newAnnotation = {
@@ -59,9 +61,10 @@ const toggleTooltipFunctionality = (plotId, userTemplate, customStyle) => {
             };
             
             _.defaults(newAnnotation, customStyle);
-
-            existingAnnotations.push(newAnnotation);
-            Plotly.relayout(gd, { annotations: existingAnnotations });
+            if (existingIndex === -1) {
+                gd.layout.annotations.push(newAnnotation);
+                Plotly.relayout(gd, { annotations: gd.layout.annotations });
+            }
         });
         tooltipsEnabled = true;
     } else {
@@ -70,21 +73,26 @@ const toggleTooltipFunctionality = (plotId, userTemplate, customStyle) => {
         tooltipsEnabled = false;
     }
     
-    document.getElementById(plotId).on('plotly_relayout', function(eventData){
-        var gd = document.getElementById(plotId);
-        var updatedAnnotations = gd.layout.annotations.filter((anno, index) => {
-            const key = `annotations[${index}].text`;
-            return eventData[key] !== ''; // Keep annotation if its text is not empty
+    if(must_run == true){//run once
+        must_run = false;
+        gd.on('plotly_relayout', function(eventData) {
+            // Iterate over eventData to find which annotation's text was set to empty
+            for (let key in eventData) {
+                if (key.includes('annotations[') && key.includes('].text')) {
+                    const index = key.match(/annotations\[(\d+)\]\.text/)[1];
+                    if (eventData[key] === '') { // Check if the text is set to empty
+                        var gd = document.getElementById(plotId);
+                        var updatedAnnotations = (gd.layout.annotations || []).slice();
+                        updatedAnnotations.splice(index, 1); // Remove the annotation at the specific index
+                        Plotly.relayout(gd, { annotations: updatedAnnotations }).then(function() {
+                            console.log('Annotation removed');
+                        });
+                        break; // Exit after handling the specific empty text case
+                    }
+                }
+            }
         });
-
-        if (gd.layout.annotations.length !== updatedAnnotations.length) { // Check if any annotations were removed
-            Plotly.relayout(gd, {
-                annotations: updatedAnnotations
-            }).then(function() {
-                console.log('Empty annotations removed');
-            });
-        }
-    });
+    }
 };
 
 module.exports = {
