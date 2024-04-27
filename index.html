@@ -7,7 +7,7 @@
     <!-- Include Plotly.js from a CDN if not bundled in your custom script -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <!-- Include your custom tooltip script -->
-    <script src="../dist/plotly_tooltip.js"></script>
+    <script src="./dist/plotly_tooltip.js"></script>
 </head>
 <body>
     <h1>Test Page for Custom Plotly Module</h1>
@@ -51,13 +51,13 @@ var yValuesTrace2 = generateRandomYValues(10);
 
 // Define the Plotly traces
 var trace1 = {
-  name: 'Trace 1', // Add name to each trace
+  name: 'Trace 1',
   x: xValues,
   y: yValuesTrace1,
   type: 'scatter',
   mode: 'lines+markers',
   marker: { size: 10 },
-  hovertemplate: userTemplate
+  hovertemplate: userTemplate //could be diffrent from Tooltip template
 };
 
 var trace2 = {
@@ -67,7 +67,7 @@ var trace2 = {
   type: 'scatter',
   mode: 'lines+markers',
   marker: { size: 10 },
-  line: { dash: 'dot' }, // Differentiate second trace with dotted line
+  line: { dash: 'dot' },
   hovertemplate: userTemplate
 };
 
@@ -75,7 +75,7 @@ var data = [trace1, trace2];
 
 // Set up the Plotly layout
 var layout = {
-  title: 'Interactive Plot', // Add a title for context
+  title: 'Scatter plot with data Tooltip annotation toggle in modebar',
   xaxis: {
     title: 'Time', // Label axes for clarity
   },
