@@ -86,18 +86,19 @@ var layout = {
 };
 
 // Initialize tooltip function
-const addTooltip = window.PlotlyTooltip.Plotly_Tooltip(plotId, userTemplate, customStyle);
+//const addTooltip = window.PlotlyTooltip.Plotly_Tooltip(plotId, userTemplate, customStyle);
 
 // Configuration options for the plot
 var config = {
   editable: true,//editable is important to allow Tooltip drag-positionning and deletion
   displayModeBar: true,
-  modeBarButtonsToAdd: [addTooltip,"v1hovermode", "hoverclosest", "hovercompare", "togglehover", "togglespikelines", "drawline", "drawopenpath", "drawclosedpath", "drawcircle", "drawrect", "eraseshape"],//addTooltip ads the Tooltip activation button
+  modeBarButtonsToAdd: ["v1hovermode", "hoverclosest", "hovercompare", "togglehover", "togglespikelines", "drawline", "drawopenpath", "drawclosedpath", "drawcircle", "drawrect", "eraseshape"],//addTooltip ads the Tooltip activation button
   responsive: true
 };
 
 // Create the plot
 Plotly.newPlot(plotId, data, layout, config);
+const addTooltip = window.PlotlyTooltip.Plotly_Tooltip(plotId, userTemplate, customStyle);
     </script>
 </body>
 </html>

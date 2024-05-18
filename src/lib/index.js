@@ -21,6 +21,10 @@ function applyTooltipFunctionality(gd, userTemplate, customStyle) {
   const template = userTemplate || DEFAULT_TEMPLATE;
   gd.on('plotly_click', function(data) {
     var pts = data.points[0];
+    
+    // Initialize the annotations array if it doesn't exist
+    if(gd.layout.annotations===undefined)gd.layout.annotations = [];
+    
     var existingIndex = gd.layout.annotations.findIndex(ann => ann.x === pts.x && ann.y === pts.y);
     var text = lib.hovertemplateString(template, {}, gd._fullLayout._d3locale, pts, {});
     var newAnnotation = {
@@ -63,7 +67,7 @@ function applyTooltipFunctionality(gd, userTemplate, customStyle) {
 }
 
 // Initialize tooltips or set up observer if element is not yet available
-function initializeTooltips(plotId, userTemplate, customStyle) {
+function Plotly_Tooltip(plotId, userTemplate, customStyle) {
   let gd = document.getElementById(plotId);
   if (gd) {
     applyTooltipFunctionality(gd, userTemplate, customStyle);
@@ -84,5 +88,5 @@ function initializeTooltips(plotId, userTemplate, customStyle) {
 }
 
 module.exports = {
-  initializeTooltips
+  Plotly_Tooltip
 };
