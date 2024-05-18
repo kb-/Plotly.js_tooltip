@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plotly Tooltip Example</title>
-    <!-- Include Plotly.js from a CDN if not bundled in your custom script -->
+    <!-- Include Plotly.js from a CDN -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <!-- Include your custom tooltip script -->
     <script src="./dist/plotly_tooltip.js"></script>
@@ -13,92 +13,88 @@
     <h1>Test Page for Custom Plotly Module</h1>
     <div id="plot"></div>
     <script>
-    
-// Define the Tooltip template and custom style
-var userTemplate = "%{fullData.name}<br>%{x|%H:%M:%S}<br>y: %{y:.2e}"; //optional, can use {} Tooltip template syntax is identical to Plotly's hovertemplate. https://plotly.com/javascript/reference/scatter/#scatter-hovertemplate
-//available variables are those in event data https://plotly.com/javascript/plotlyjs-events/#event-data
+    // Define the Tooltip template and custom style
+    var userTemplate = "%{fullData.name}<br>%{x|%H:%M:%S}<br>y: %{y:.2e}";
+    var customStyle = {
+      arrowsize: 1.2,
+      font: {
+        size: 14,
+        color: 'blue',
+      },
+    };
+    var plotId = 'plot';
 
-var customStyle = {//optional, can use {}
-  arrowsize: 1.2,
-  font: {
-    size: 14, // Slightly larger font for readability
-    color: 'blue',
-  },
-};
+    // Generate date and time values
+    function generateDateTime(start, count) {
+      let dates = [];
+      let current = new Date(start);
+      for (let i = 0; i < count; i++) {
+        dates.push(new Date(current));
+        current.setHours(current.getHours() + 7);
+      }
+      return dates;
+    }
 
-var plotId = 'plot';
+    // Generate random y-values
+    function generateRandomYValues(count) {
+      return Array.from({ length: count }, () => Math.random() * 20);
+    }
 
-// Generate date and time values
-function generateDateTime(start, count) {
-  let dates = [];
-  let current = new Date(start);
-  for (let i = 0; i < count; i++) {
-    dates.push(new Date(current));
-    current.setHours(current.getHours() + 7);
-  }
-  return dates;
-}
+    // Generate data points
+    var xValues = generateDateTime('2024-04-01T12:00:00Z', 10);
+    var yValuesTrace1 = generateRandomYValues(10);
+    var yValuesTrace2 = generateRandomYValues(10);
 
-// Generate random y-values
-function generateRandomYValues(count) {
-  return Array.from({ length: count }, () => Math.random() * 20);
-}
+    // Define the Plotly traces
+    var trace1 = {
+      name: 'Trace 1',
+      x: xValues,
+      y: yValuesTrace1,
+      type: 'scatter',
+      mode: 'lines+markers',
+      marker: { size: 10 },
+      hovertemplate: userTemplate
+    };
 
-// Generate data points
-var xValues = generateDateTime('2024-04-01T12:00:00Z', 10);
-var yValuesTrace1 = generateRandomYValues(10);
-var yValuesTrace2 = generateRandomYValues(10);
+    var trace2 = {
+      name: 'Trace 2',
+      x: xValues,
+      y: yValuesTrace2,
+      type: 'scatter',
+      mode: 'lines+markers',
+      marker: { size: 10 },
+      line: { dash: 'dot' },
+      hovertemplate: userTemplate
+    };
 
-// Define the Plotly traces
-var trace1 = {
-  name: 'Trace 1',
-  x: xValues,
-  y: yValuesTrace1,
-  type: 'scatter',
-  mode: 'lines+markers',
-  marker: { size: 10 },
-  hovertemplate: userTemplate //could be diffrent from Tooltip template
-};
+    var data = [trace1, trace2];
 
-var trace2 = {
-  name: 'Trace 2',
-  x: xValues,
-  y: yValuesTrace2,
-  type: 'scatter',
-  mode: 'lines+markers',
-  marker: { size: 10 },
-  line: { dash: 'dot' },
-  hovertemplate: userTemplate
-};
+    // Set up the Plotly layout
+    var layout = {
+      title: 'Scatter plot with data Tooltip annotation toggle in modebar',
+      xaxis: {
+        title: 'Time',
+      },
+      yaxis: {
+        title: 'Value',
+      },
+      hovermode: 'closest'
+    };
 
-var data = [trace1, trace2];
+    // Configuration options for the plot
+    var config = {
+      editable: true,
+      displayModeBar: true,
+      modeBarButtonsToAdd: ["v1hovermode", "hoverclosest", "hovercompare", "togglehover", "togglespikelines", "drawline", "drawopenpath", "drawclosedpath", "drawcircle", "drawrect", "eraseshape"],
+      responsive: true
+    };
 
-// Set up the Plotly layout
-var layout = {
-  title: 'Scatter plot with data Tooltip annotation toggle in modebar',
-  xaxis: {
-    title: 'Time', // Label axes for clarity
-  },
-  yaxis: {
-    title: 'Value',
-  },
-  hovermode: 'closest' // Set hovermode to closest for clarity on hover
-};
-
-// Initialize tooltip function
-//const addTooltip = window.PlotlyTooltip.Plotly_Tooltip(plotId, userTemplate, customStyle);
-
-// Configuration options for the plot
-var config = {
-  editable: true,//editable is important to allow Tooltip drag-positionning and deletion
-  displayModeBar: true,
-  modeBarButtonsToAdd: ["v1hovermode", "hoverclosest", "hovercompare", "togglehover", "togglespikelines", "drawline", "drawopenpath", "drawclosedpath", "drawcircle", "drawrect", "eraseshape"],//addTooltip ads the Tooltip activation button
-  responsive: true
-};
-
-// Create the plot
-Plotly.newPlot(plotId, data, layout, config);
-const addTooltip = window.PlotlyTooltip.Plotly_Tooltip(plotId, userTemplate, customStyle);
+    // Create the plot
+    Plotly.newPlot(plotId, data, layout, config).then(() => {
+      // Initialize tooltip function after the plot is created
+      console.log("Plot created, initializing tooltips");
+      window.PlotlyTooltip.Plotly_Tooltip(plotId, userTemplate, customStyle);
+    });
     </script>
 </body>
 </html>

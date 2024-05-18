@@ -13,7 +13,7 @@ module.exports = [{
       globalObject: 'this', // Ensures UMD works in both Node and browser environments
     },
     externals: {
-        'plotly.js-basic-dist': 'Plotly'
+        'plotly.js': 'Plotly'
     },
     mode: 'development',  // Change to 'production' when ready to deploy / production
     devtool: 'source-map',

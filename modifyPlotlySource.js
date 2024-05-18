@@ -1,6 +1,7 @@
-const code_to_add = 'module.exports = { templateFormatString, lib };';
 const fs = require('fs');
 const path = require('path');
+
+const code_to_add = 'module.exports = { templateFormatString, lib };';
 
 // Define paths
 const sourceFilePath = path.resolve(__dirname, 'node_modules/plotly.js/src/lib/index.js');

@@ -1,0 +1,10 @@
+diff --git a/node_modules/plotly.js/src/lib/index.js b/node_modules/plotly.js/src/lib/index.js
+index a414f8e..ce4ba79 100644
+--- a/node_modules/plotly.js/src/lib/index.js
++++ b/node_modules/plotly.js/src/lib/index.js
+@@ -1447,3 +1447,5 @@ lib.getPositionFromD3Event = function() {
+         ];
+     }
+ };
++
++module.exports = { templateFormatString, lib };

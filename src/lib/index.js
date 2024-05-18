@@ -1,6 +1,10 @@
-const { lib } = require('plotly.js/src/lib/index'); // Assume Plotly's internal API is used for hovertemplate processing
-const _ = require('lodash'); // Utility library for extending default settings
-const DEFAULT_TEMPLATE = "x: %{x},<br>y: %{y}"; // Default tooltip template
+// src/lib/index.js
+
+const Plotly_full = require('plotly.js');  // Use the full version of Plotly.js
+const { lib } = require('plotly.js/src/lib');
+const _ = require('lodash');
+
+const DEFAULT_TEMPLATE = "x: %{x},<br>y: %{y}";
 const DEFAULT_STYLE = {
   align: "left",
   arrowcolor: "black",
@@ -16,18 +20,19 @@ const DEFAULT_STYLE = {
   xanchor: "left",
 };
 
-// Function to apply tooltip functionality
 function applyTooltipFunctionality(gd, userTemplate, customStyle) {
+  console.log("applyTooltipFunctionality called");
   const template = userTemplate || DEFAULT_TEMPLATE;
-  gd.on('plotly_click', function(data) {
-    var pts = data.points[0];
-    
-    // Initialize the annotations array if it doesn't exist
-    if(gd.layout.annotations===undefined)gd.layout.annotations = [];
-    
-    var existingIndex = gd.layout.annotations.findIndex(ann => ann.x === pts.x && ann.y === pts.y);
-    var text = lib.hovertemplateString(template, {}, gd._fullLayout._d3locale, pts, {});
-    var newAnnotation = {
+
+  function addAnnotation(data) {
+    console.log("addAnnotation called with data:", data);
+    const pts = data.points[0];
+
+    if (gd.layout.annotations === undefined) gd.layout.annotations = [];
+
+    const existingIndex = gd.layout.annotations.findIndex(ann => ann.x === pts.x && ann.y === pts.y);
+    const text = lib.hovertemplateString(template, {}, gd._fullLayout._d3locale, pts, {});
+    const newAnnotation = {
       x: pts.x,
       y: pts.y,
       xref: 'x',
@@ -39,46 +44,49 @@ function applyTooltipFunctionality(gd, userTemplate, customStyle) {
     };
     _.defaults(newAnnotation, customStyle);
     if (existingIndex === -1) {
+      console.log("Adding new annotation:", newAnnotation);
       gd.layout.annotations.push(newAnnotation);
-      Plotly.relayout(gd, { annotations: gd.layout.annotations });
+      Plotly_full.relayout(gd, { annotations: gd.layout.annotations });
     }
-  });
+  }
 
-  // Set up to only run once
+  function removeAnnotation(eventData) {
+    console.log("removeAnnotation called with eventData:", eventData);
+    for (let key in eventData) {
+      if (key.includes('annotations[') && key.includes('].text')) {
+        const index = key.match(/annotations\[(\d+)\]\.text/)[1];
+        if (eventData[key] === '') {
+          const updatedAnnotations = gd.layout.annotations || [];
+          updatedAnnotations.splice(index, 1);
+          Plotly_full.relayout(gd, { annotations: updatedAnnotations });
+          break;
+        }
+      }
+    }
+  }
+
+  gd.on('plotly_click', addAnnotation);
+  console.log("Event listener for plotly_click added using gd.on");
+
   if (!gd._hasTooltipHandler) {
     gd._hasTooltipHandler = true;
-
-    // Delete annotation when editable annotation text gets deleted
-    gd.on('plotly_relayout', function(eventData) {
-      // Iterate over eventData to find which annotation's text was set to empty
-      for (let key in eventData) {
-          if (key.includes('annotations[') && key.includes('].text')) {
-              const index = key.match(/annotations\[(\d+)\]\.text/)[1];
-              if (eventData[key] === '') { // Check if the text is set to empty
-                  var updatedAnnotations = gd.layout.annotations || [];
-                  updatedAnnotations.splice(index, 1); // Remove the annotation at the specific index
-                  Plotly.relayout(gd, { annotations: updatedAnnotations });
-                  break; // Exit after handling the specific empty text case
-              }
-          }
-      }
-    });
+    gd.on('plotly_relayout', removeAnnotation);
+    console.log("Event listener for plotly_relayout added using gd.on");
   }
 }
 
-// Initialize tooltips or set up observer if element is not yet available
 function Plotly_Tooltip(plotId, userTemplate, customStyle) {
+  console.log("Plotly_Tooltip called");
   let gd = document.getElementById(plotId);
   if (gd) {
     applyTooltipFunctionality(gd, userTemplate, customStyle);
   } else {
-    // Observer to handle dynamically added DOM elements
     const observer = new MutationObserver(function(mutations) {
       mutations.forEach(function(mutation) {
         mutation.addedNodes.forEach(function(node) {
-          if (node.id === plotId && node.tagName === 'DIV') { // Ensure it matches the expected plot container
+          if (node.id === plotId && node.tagName === 'DIV') {
             applyTooltipFunctionality(node, userTemplate, customStyle);
-            observer.disconnect(); // Disconnect after successful application to avoid unnecessary overhead
+            observer.disconnect();
           }
         });
       });
